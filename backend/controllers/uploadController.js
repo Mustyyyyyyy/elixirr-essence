@@ -1,7 +1,33 @@
 import path from "path";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
-import sharp from "sharp";
+
+let sharpPromise;
+
+const getSharp = async () => {
+  if (!sharpPromise) {
+    sharpPromise = import("sharp")
+      .then(({ default: sharp }) => sharp)
+      .catch((error) => {
+        sharpPromise = undefined;
+        console.error("Sharp is unavailable; uploads will keep their original format:", error.message);
+        return null;
+      });
+  }
+  return sharpPromise;
+};
+
+const writeImage = async (file, outputPath) => {
+  const sharp = await getSharp();
+  if (sharp) {
+    await sharp(file.buffer)
+      .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 85 })
+      .toFile(outputPath);
+    return;
+  }
+  await fs.promises.writeFile(outputPath, file.buffer);
+};
 
 const ensureDir = (dir) => {
   if (!fs.existsSync(dir)) {
@@ -23,11 +49,7 @@ export const uploadImage = async (req, res) => {
 
     ensureDir(uploadDir);
 
-    // Optimize and resize image
-    await sharp(file.buffer)
-      .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
-      .jpeg({ quality: 85 })
-      .toFile(outputPath);
+    await writeImage(file, outputPath);
 
     const imageUrl = `/uploads/products/${filename}`;
     res.json({ url: imageUrl });
@@ -52,10 +74,7 @@ export const uploadMultiple = async (req, res) => {
       const filename = `${uuidv4()}${ext}`;
       const outputPath = path.join(uploadDir, filename);
 
-      await sharp(file.buffer)
-        .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
-        .jpeg({ quality: 85 })
-        .toFile(outputPath);
+      await writeImage(file, outputPath);
 
       urls.push(`/uploads/products/${filename}`);
     }
