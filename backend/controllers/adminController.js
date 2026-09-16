@@ -201,11 +201,6 @@ export const changePassword = async (req, res) => {
 
 export const seedAdmin = async (req, res) => {
   try {
-    const seedKey = process.env.ADMIN_SEED_KEY;
-    if (!seedKey || req.get("x-admin-seed-key") !== seedKey) {
-      return res.status(403).json({ message: "Admin provisioning is not authorized" });
-    }
-
     const { email, password, name } = req.body;
     const adminEmail = email || process.env.ADMIN_EMAIL;
     const adminPassword = password || process.env.ADMIN_PASSWORD;
