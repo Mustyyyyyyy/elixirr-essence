@@ -128,7 +128,7 @@ Deploy the customer storefront and admin panel as separate Vercel projects:
 
 1. Set the customer project's **Root Directory** to `client`.
 2. Set the admin project's **Root Directory** to `client/admin`.
-3. Set `VITE_API_URL` in both projects to the deployed backend URL ending in `/api`.
+3. In each Vercel project's **Settings → Environment Variables**, add `VITE_API_URL` with the value `https://elixirr-backend.vercel.app/api` for Production, Preview, and Development, then redeploy.
 4. Set the backend `CORS_ORIGIN` to both Vercel URLs, separated by commas.
 
 Each app includes a `vercel.json` SPA rewrite so direct links such as `/product/...` and `/admin/login` continue to work after refresh. The Express/PostgreSQL backend must be deployed separately and must use a managed PostgreSQL database.

@@ -3,8 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 import type { Product, ProductImage } from "../types/product";
-
-const API_ORIGIN = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
+import { API_ORIGIN } from "../config/api";
 const imageUrl = (url: string) => url.startsWith("http") ? url : `${API_ORIGIN}${url}`;
 
 const ProductForm = () => {

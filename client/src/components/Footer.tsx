@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 import { useState } from "react";
 import type React from "react";
 import { products } from "../data/products";
@@ -29,7 +30,7 @@ export function Footer() {
   const subscribe = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
-    const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/subscribers`, {
+    const response = await fetch(`${API_BASE_URL}/subscribers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

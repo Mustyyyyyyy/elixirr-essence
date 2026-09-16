@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://localhost:3001")
+const allowedOrigins = (process.env.CORS_ORIGIN || "https://elixirr-essence.vercel.app/,https://elixirr-essence-vvar.vercel.app/")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
