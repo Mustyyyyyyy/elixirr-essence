@@ -28,6 +28,9 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "*")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+// Debug: log CORS origins
+console.log("Allowed CORS origins:", allowedOrigins);
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, curl, or server-to-server)
