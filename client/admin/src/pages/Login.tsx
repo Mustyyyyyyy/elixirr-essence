@@ -37,7 +37,12 @@ const Login = () => {
       login(response.data.token, response.data.admin);
       navigate("/");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
+      const validationErrors = err.response?.data?.errors;
+      setError(
+        err.response?.data?.message ||
+        validationErrors?.[0]?.msg ||
+        "Login failed"
+      );
     } finally {
       setLoading(false);
     }

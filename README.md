@@ -133,6 +133,17 @@ Deploy the customer storefront and admin panel as separate Vercel projects:
 
 Each app includes a `vercel.json` SPA rewrite so direct links such as `/product/...` and `/admin/login` continue to work after refresh. The Express/PostgreSQL backend must be deployed separately and must use a managed PostgreSQL database.
 
+### Seed the production admin
+
+The production database needs an admin account before `/admin/login` can work. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the backend Vercel project's environment variables, redeploy, then run the seed endpoint once:
+
+```powershell
+$body = '{"email":"admin@your-domain.com","password":"use-a-strong-password","name":"Elixirr Admin"}'
+Invoke-RestMethod -Uri "https://elixirr-backend.vercel.app/api/admin/seed" -Method Post -ContentType "application/json" -Body $body
+```
+
+Use the same email and password at the admin login page. If the account already exists, update its password through the database or run the seed script against the production `DATABASE_URL`; the seed endpoint does not overwrite an existing admin.
+
 ## API Documentation
 
 ### Products

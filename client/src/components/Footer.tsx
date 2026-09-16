@@ -17,10 +17,10 @@ const footerNav = [
 ];
 
 const customerNav = [
-  { name: "Shipping", href: "/faq" },
-  { name: "Returns", href: "/faq" },
-  { name: "Privacy", href: "#" },
-  { name: "Terms", href: "#" },
+  { name: "Shipping", href: "/shipping" },
+  { name: "Returns", href: "/returns" },
+  { name: "Privacy", href: "/privacy" },
+  { name: "Terms", href: "/terms" },
 ];
 
 export function Footer() {
