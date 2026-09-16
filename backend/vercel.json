@@ -1,22 +1,16 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
-  "installCommand": "npm install",
+  "runtime": "nodejs20.x",
   "regions": ["sin1"],
-  "env": {
-    "NODE_ENV": "production",
-    "CORS_ORIGIN": "https://elixirr-essence.vercel.app,https://elixirr-essence-vvar.vercel.app,https://elixirr-backend.vercel.app,http://localhost:5173,http://localhost:3001"
-  },
   "functions": {
     "api/index.js": {
-      "runtime": "@vercel/node@20.x",
       "memory": 1024
     }
   },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.js"
+      "dest": "/api/index.js"
     }
   ]
 }
