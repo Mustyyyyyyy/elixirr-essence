@@ -26,19 +26,25 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http:/
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-const startServer = async ({ listen = true } = {}) => {
+const startServer = async () => {
   try {
     await initDatabase();
     await testConnection();
-    if (listen) {
-      app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-    }
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   } catch (error) {
     console.error("Failed to initialize database:", error);
-    if (listen) process.exit(1);
-    throw error;
+    process.exit(1);
+  }
+};
+
+const requireDatabase = async (req, res, next) => {
+  try {
+    await initDatabase();
+    next();
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -67,8 +73,12 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.get("/", (req, res) => {
-  res.json({ message: "Elixirr Essence Backend is running...", version: "1.0.0" });
+  res.json({ message: "Elixirr Essence Backend is running...", version: "1.0.0", database: "available on API requests" });
 });
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end();
+});
+app.use("/api", requireDatabase);
 app.use("/api/products", productRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
@@ -79,9 +89,7 @@ app.use("/api/subscribers", subscriberRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-if (process.env.VERCEL) {
-  await startServer({ listen: false });
-} else {
+if (!process.env.VERCEL) {
   startServer();
 }
 

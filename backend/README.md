@@ -33,6 +33,7 @@ Express.js backend for the Elixirr Essence e-commerce platform with admin functi
 
 - `PORT` - Server port (default: 5000)
 - `DATABASE_URL` - PostgreSQL connection string, or use `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`
+- `DATABASE_SSL` - Set to `false` only for local PostgreSQL without SSL
 - `JWT_SECRET` - Secret key for JWT signing
 - `JWT_EXPIRES_IN` - JWT expiration time
 - `CORS_ORIGIN` - Comma-separated list of allowed origins
@@ -47,6 +48,8 @@ The backend includes [vercel.json](./vercel.json) and can be deployed as a Verce
 2. Add the environment variables above, including a managed PostgreSQL connection.
 3. Set `CORS_ORIGIN` to the deployed customer and admin frontend URLs.
 4. Set both frontend `VITE_API_URL` values to this deployment URL followed by `/api`.
+
+The root health endpoint does not require a database connection. Database-backed `/api/*` requests initialize a cached PostgreSQL connection on demand, so a database configuration issue no longer makes the entire deployment unavailable.
 
 Uploaded files are stored locally for development. Use object storage for persistent production uploads because Vercel's filesystem is ephemeral.
 
