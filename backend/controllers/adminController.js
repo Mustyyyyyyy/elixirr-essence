@@ -201,10 +201,19 @@ export const changePassword = async (req, res) => {
 
 export const seedAdmin = async (req, res) => {
   try {
+    const seedKey = process.env.ADMIN_SEED_KEY;
+    if (!seedKey || req.get("x-admin-seed-key") !== seedKey) {
+      return res.status(403).json({ message: "Admin provisioning is not authorized" });
+    }
+
     const { email, password, name } = req.body;
     const adminEmail = email || process.env.ADMIN_EMAIL;
     const adminPassword = password || process.env.ADMIN_PASSWORD;
     const adminName = name || "Admin";
+
+    if (!adminEmail || !adminPassword || adminPassword.length < 6) {
+      return res.status(400).json({ message: "A valid admin email and password are required" });
+    }
 
     const existingAdmin = await db.oneOrNone(
       "SELECT * FROM admins WHERE email = $1",
@@ -212,7 +221,12 @@ export const seedAdmin = async (req, res) => {
     );
 
     if (existingAdmin) {
-      return res.json({ message: "Admin already exists" });
+      const hashedPassword = await hashPassword(adminPassword);
+      await db.none(
+        "UPDATE admins SET name = $1, password = $2, is_active = TRUE, updated_at = CURRENT_TIMESTAMP WHERE email = $3",
+        [adminName, hashedPassword, adminEmail]
+      );
+      return res.json({ message: "Admin credentials updated successfully" });
     }
 
     const hashedPassword = await hashPassword(adminPassword);

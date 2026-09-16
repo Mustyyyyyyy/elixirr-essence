@@ -11,7 +11,7 @@ import { authenticate, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Public auth routes
+// Public login and protected provisioning route
 router.post("/login", loginValidation, loginAdmin);
 router.post("/seed", seedAdmin);
 
